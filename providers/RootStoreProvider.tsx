@@ -1,28 +1,26 @@
-import { RootStore, RootStoreHydration } from '@stores/RootStore';
-import { enableStaticRendering } from 'mobx-react-lite';
-import { createContext, ReactNode, useContext, useEffect } from 'react';
+import { RootHydrationData, RootStore } from "@stores/RootStore"
+import { enableStaticRendering } from "mobx-react-lite";
+import { createContext, ReactNode, useContext } from "react"
 
 enableStaticRendering(typeof window === 'undefined');
 
 let store: RootStore;
-const StoreContext = createContext<RootStore | undefined>(undefined);
-StoreContext.displayName = 'StoreContext';
+const RootContext = createContext<RootStore | undefined>(undefined);
 
-export function useRootStore() {
-  const context = useContext(StoreContext);
+export const useRootStore = () => {
+  const context = useContext(RootContext);
 
-  if (context === undefined)
-    throw new Error('useRootStore must be used within RootStoreProvider');
+  if (context === undefined) throw new Error('fuck!');
 
   return context;
 }
 
-export function useCounterStore() {
+export const useCounterStore = () => {
   const { counterStore } = useRootStore();
   return counterStore;
 }
 
-export function useSizeSwitcherStore() {
+export const useSizeSiwtcherStore = () => {
   const { sizeSwitcherStore } = useRootStore();
   return sizeSwitcherStore;
 }
@@ -32,23 +30,22 @@ export const RootStoreProvider = ({
   hydrationData
 }: {
   children: ReactNode,
-  hydrationData?: RootStoreHydration
+  hydrationData?: RootHydrationData
 }) => {
-  store = initializeStore(hydrationData);
+  store = initiateStore(hydrationData);
 
   return (
-    <StoreContext.Provider value={store}>
+    <RootContext.Provider value={store}>
       {children}
-    </StoreContext.Provider>
+    </RootContext.Provider>
   )
-};
+}
 
-function initializeStore(initialData?: RootStoreHydration): RootStore {
-  const _store = store ?? new RootStore;
+function initiateStore(initialData?: RootHydrationData): RootStore {
+  let _store = store ?? new RootStore();
 
-  if (initialData) {
+  if (initialData)
     _store.hydrate(initialData);
-  }
 
   if (typeof window === 'undefined') return _store;
 

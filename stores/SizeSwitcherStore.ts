@@ -1,14 +1,14 @@
-import { makeAutoObservable } from 'mobx';
-import { RootStore } from '@stores/RootStore';
+import { makeAutoObservable } from "mobx";
+import { RootStore } from "./RootStore";
 
-export function sizeSwitcherStoreFactory(root: RootStore) {
+export function SizeSwitcherStoreFactory (root: RootStore) {
   return makeAutoObservable({
-    makeStopwatchSmall: () => {
-      root.counterStore.size = 'SMALL';
+    setSizeToBig: () => {
+      root.counterStore.size = 'BIG';
     },
 
-    makeStopwatchBig: () => {
-      root.counterStore.size = 'BIG';
+    setSizeToSmall: () => {
+      root.counterStore.size = 'SMALL';
     }
-  })
+  });
 }

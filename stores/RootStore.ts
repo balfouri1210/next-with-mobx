@@ -1,21 +1,21 @@
-import { CounterStore, CounterHydration } from '@stores/CounterStore';
-import { sizeSwitcherStoreFactory } from '@stores/SizeSwitcherStore';
+import { CounterStore, counterStoreHydration } from '@stores/CounterStore';
+import { SizeSwitcherStoreFactory } from '@stores/SizeSwitcherStore';
 
-export type RootStoreHydration = {
-  stopwatchStore?: CounterHydration;
+export type RootHydrationData = {
+  counterStoreHydration: counterStoreHydration;
 }
 
 export class RootStore {
   counterStore: CounterStore;
-  sizeSwitcherStore: ReturnType<typeof sizeSwitcherStoreFactory>;
+  sizeSwitcherStore: ReturnType<typeof SizeSwitcherStoreFactory>
 
   constructor() {
     this.counterStore = new CounterStore(this);
-    this.sizeSwitcherStore = sizeSwitcherStoreFactory(this);
+    this.sizeSwitcherStore = SizeSwitcherStoreFactory(this);
   }
 
-  hydrate(data: RootStoreHydration) {
-    if (data.stopwatchStore)
-      this.counterStore.hydrate(data.stopwatchStore);
+  hydrate(data: RootHydrationData) {
+    if (data.counterStoreHydration)
+      this.counterStore.hydrate(data.counterStoreHydration);
   }
 }

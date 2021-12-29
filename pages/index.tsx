@@ -2,10 +2,11 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { useCounterStore } from '@providers/RootStoreProvider';
+import { useCounterStore, useRootStore } from '@providers/RootStoreProvider';
 import { observer } from 'mobx-react-lite'
 
 const Home: NextPage = observer(() => {
+  const rootStore = useRootStore();
   const counterStore = useCounterStore();
 
   return (
@@ -21,14 +22,18 @@ const Home: NextPage = observer(() => {
           COUNTER with MOBX
         </h1>
 
+        {/* <h2>Is user logged in? {rootStore.isLoggedIn ? 'YES' : 'NOPE'}</h2>
+        <button onClick={() => rootStore.toggleIsLoggedIn()}>TOGGLE!</button> */}
+
         <div>
           Count : {counterStore.counter}<br />
-          State : {counterStore.state}
+          State : {counterStore.status}
         </div>
 
         <div>
           <button onClick={() => counterStore.start()}>START COUNTING</button>
-          <button onClick={() => counterStore.pause()}>PAUSE COUNTING</button>
+          <button onClick={() => counterStore.pause()}>PAUSE~</button>
+          <button onClick={() => counterStore.stop()}>STOP!</button>
         </div>
       </main>
 

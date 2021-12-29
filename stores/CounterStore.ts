@@ -1,7 +1,7 @@
-import { action, observable, makeObservable, runInAction } from 'mobx';
-import { RootStore } from '@stores/RootStore';
+import { action, makeObservable, observable, runInAction } from "mobx";
+import { RootStore } from "@stores/RootStore";
 
-export type CounterHydration = {
+export type counterStoreHydration = {
   start: number;
 }
 
@@ -9,23 +9,21 @@ export class CounterStore {
   root: RootStore;
   counter: number = 0;
   size: 'BIG' | 'SMALL' = 'SMALL';
-  state: 'STOPPED' | 'STARTED' | 'PAUSED' = 'STOPPED';
+  status: 'STOPPED' | 'STARTED' | 'PAUSED' = 'STOPPED';
   timer: number | undefined;
 
   constructor(root: RootStore) {
     this.root = root;
-
     makeObservable(this, {
       counter: observable,
       size: observable,
-      state: observable,
+      status: observable,
 
       start: action,
       pause: action,
       stop: action,
-      resume: action,
-      hydrate: action
-    });
+      resume: action
+    })
   }
 
   start() {
@@ -34,29 +32,33 @@ export class CounterStore {
   }
 
   pause() {
-    this.state = 'PAUSED';
-    window.clearInterval(this.timer);
+    this.status = 'PAUSED';
+    clearInterval(this.timer);
+    this.timer = undefined;
   }
 
   stop() {
-    this.state = 'STOPPED';
-    window.clearInterval(this.timer);
+    this.status = 'STOPPED';
+    clearInterval(this.timer);
+    this.counter = 0;
+    this.timer = undefined;
   }
 
   resume() {
-    this.startInterval();
+    if (!this.timer)
+      this.startInterval();
   }
-
+  
   startInterval() {
-    this.state = 'STARTED';
+    this.status = 'STARTED';
     this.timer = window.setInterval(() => {
       runInAction(() => {
         this.counter += 1;
-      });
+      })
     }, 1000);
   }
 
-  hydrate(data?: CounterHydration) {
+  hydrate(data?: counterStoreHydration) {
     if (data) this.counter = data.start;
   }
 }
